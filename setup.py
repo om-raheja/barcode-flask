@@ -29,5 +29,16 @@ db.execute("CREATE TABLE IF NOT EXISTS token(" +
         "expiry INTEGER NOT NULL " + 
                 ");")
 
+db.execute("CREATE TABLE IF NOT EXISTS products(\
+        name STRING NOT NULL,\
+        category STRING,\
+        price REAL NOT NULL,\
+        specs STRING NOT NULL,\
+        value REAL DEFAULT 0,\
+        price REAL DEFAULT 0,\
+        review REAL DEFAULT 0,\
+        votes REAL DEFAULT 0\
+                )")
+
 db.commit()
 db.close()

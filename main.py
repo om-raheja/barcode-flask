@@ -11,14 +11,6 @@ def get_db():
     db = sqlite3.connect("main.sqlite")
     return db
 
-@app.route("/users", methods=["GET"])
-def get_users():
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
-    return jsonify(users)
-
 @app.route("/users", methods=["POST"])
 def create_user():
     db = get_db()
@@ -69,31 +61,14 @@ def login():
 
     return response
 
-@app.route("/users/<int:user_id>", methods=["GET"])
-def get_user(user_id):
+@app.route("/products.json")
+def products():
     db = get_db()
     cursor = db.cursor()
-    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
-    user = cursor.fetchone()
-    return jsonify(user)
+    cursor.execute("SELECT * FROM products;")
 
-@app.route("/users/<int:user_id>", methods=["PUT"])
-def update_user(user_id):
-    db = get_db()
-    cursor = db.cursor()
-    name = request.form["name"]
-    email = request.form["email"]
-    cursor.execute("UPDATE users SET name = ?, email = ? WHERE id = ?", (name, email, user_id))
-    db.commit()
-    return jsonify({"message": "User updated successfully"})
+    return jsonify(cursor.fetchall())
 
-@app.route("/users/<int:user_id>", methods=["DELETE"])
-def delete_user(user_id):
-    db = get_db()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
-    db.commit()
-    return jsonify({"message": "User deleted successfully"})
 
 @app.route("/")
 def index():
