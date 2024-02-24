@@ -1,28 +1,26 @@
 from PIL import Image
-from openai import OpenAI
 import pytesseract as OCR
-import os
+import api_key
+from openai import OpenAI as AI
+
+receipts = ['image.jpg']
+amounts = []
+merchants = []
 
 OCR.pytesseract.tesseract_cmd = r"/usr/local/bin/tesseract"
 
-client = OpenAI(
-	api_key = os.environ.get("OPENAI_API_KEY"),
-)
+client = AI(api_key = api_key.key)
 
-def app():
-	# data shit --> where does it come from???
-	data = OCR.image_to_string("input.png")
-	print(data)
+for receipt in receipts:
+	text = OCR.image_to_string(receipt)
+	print(text)
 
-	complete = client.chat.completions.create(
-		model="gpt-3.5-turbo",
-		messages = [
-		{
+	req = client.chat.completions.create(
+		model="gpt-3.5.turbo",
+		messages = [{
 			"role": "user",
-			"content": "parse the following data in JSON format: ${data}",
-		}
-	])
+			"content": f"parse the following receipt as JSON data: {text}",
+		}]
+	)
 
-	print(complete.choices[0].message.content)
-
-app()
+	print(req.choices[0].message.content)
